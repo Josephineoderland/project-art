@@ -13,7 +13,8 @@ const Character = () => {
   }
 
   return (
-    <div className="character-page">
+    <div className="character-info-page">
+        <div className="box-container">
       <div className="draw-info-container">
         <div className="draw-info-child">
           <div className="under-title">
@@ -82,6 +83,7 @@ const Character = () => {
           <h3>Karin Holm</h3>
           <p>Lorem ipsum lorem ipsum lorem ipsum</p>
         </div>
+      </div>
       </div>
     </div>
   )

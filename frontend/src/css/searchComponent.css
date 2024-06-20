@@ -1,6 +1,6 @@
 .results-container {
   margin-top: 20px;
-  height: calc(100vh - 340px);
+  height: calc(100vh - 360px);
   overflow: auto;
 }
 
@@ -30,6 +30,12 @@
 @media (min-width:760px) and (max-width: 1024px) {
   .results-list li {
     font-size: 20px;
+  }
+
+  .results-container {
+    margin-top: 20px;
+    height: calc(100vh - 450px);
+    overflow: auto;
   }
 }
 

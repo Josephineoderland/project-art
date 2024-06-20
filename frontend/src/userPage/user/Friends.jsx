@@ -3,6 +3,7 @@ import { getUserIdFromToken } from "../auth/authUtils"
 import { useNavigate } from "react-router-dom"
 import { apiRequest } from "../../utils/api"
 import "../../css/friends.css"
+import { FS_URL } from "../../utils/constants"
 
 const Friends = () => {
   const [friends, setFriends] = useState([])
@@ -59,7 +60,7 @@ const Friends = () => {
                 <li key={index} className="friend-item">
                   {friend.profileImageUrl && (
                     <img
-                      src={`${process.env.REACT_APP_API_HOST}${friend.profileImageUrl}`}
+                      src={`${FS_URL}${friend.profileImageUrl}`}
                       alt={`${friend.username}'s profile`}
                       className="friend-profile-image"
                     />

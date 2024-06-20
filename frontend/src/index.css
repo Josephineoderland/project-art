@@ -121,13 +121,11 @@ p {
 }
 
 #newMessageInput {
-  padding: 10px;
   border: 1px solid #ccc;
-  width: 90%;
   font-family: "Fira Mono", monospace;
   font-weight: 400;
   font-style: normal;
-  background-color: #fff;
+  background-color: #ffff;
 }
 
 #newMessageInput:focus {
@@ -139,6 +137,7 @@ p {
   border: 1px solid #000000;
   padding: 10px;
   background-color: #fff;
+  overflow: hidden;
 }
 
 .friends-list {
@@ -161,7 +160,7 @@ p {
 }
 
 img {
-  max-width: 100%;
+  width: 100%;
 }
 
 .profile-image {
@@ -230,12 +229,38 @@ img {
   font-size: 18px;
   text-decoration: none;
   color: var(--icon-color);
+  padding: 15px 5px;
 }
 
 .fas:hover,
 .far:hover,
 .fab:hover {
   color: var(--icon-color-hover);
+}
+
+input[type="text"],
+input[type="password"] {
+  border: none;
+  border-bottom: 2px solid black;
+  width: 100%;
+  padding: 15.7px 0;
+  outline: none;
+  background: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="text"]:active,
+input[type="password"]:active {
+  background: none;
+  outline: none;
+}
+
+input {
+  font-size: 16px;
 }
 
 @media (min-width:760px) and (max-width: 1024px) {
@@ -284,6 +309,7 @@ img {
   #newMessageInput {
     padding: 20px;
     font-size: 20px;
+    width: 90%;
   }
 
   .my-form {
@@ -323,7 +349,7 @@ img {
   .far,
   .fab {
     font-size: 25px;
-
+    padding: 15px 5px;
   }
 }
 
@@ -383,6 +409,7 @@ img {
   #newMessageInput {
     padding: 20px;
     font-size: 20px;
+    width: 91.5%;
   }
 
   .my-form {

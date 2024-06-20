@@ -1,7 +1,7 @@
 async function apiRequest(method, endpoint, headers, data ) {
   endpoint = endpoint.replace(/^\//, '');
   return await fetch(
-    `${process.env.REACT_APP_API_HOST}/${endpoint}`,
+    `${process.env.REACT_APP_API_HOST}/api/${endpoint}`,
     {
       method: method,
       headers: headers,

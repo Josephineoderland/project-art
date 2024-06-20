@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Link, useNavigate } from "react-router-dom"
 import "../css/Navbar.css"
@@ -7,8 +7,14 @@ const Navbar = ({ isLoggedIn, updateIsLoggedIn }) => {
   const [isToggled, setToggle] = useState(false)
   const [isUserMenuOpen, setUserMenuOpen] = useState(false)
   const [subItemsVisible, setSubItemsVisible] = useState(false)
-
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    if (token) {
+      updateIsLoggedIn(true) 
+    }
+  }, [updateIsLoggedIn])
 
   const toggleMenu = () => {
     setToggle(!isToggled)

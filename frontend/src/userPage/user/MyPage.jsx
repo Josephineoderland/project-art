@@ -6,6 +6,7 @@ import MyPageForm from "./MypageForm"
 import UserSettingsForm from "./UserSettingsForm"
 import "../../css/myPage.css"
 import { getUserIdFromToken } from "../auth/authUtils"
+import { FS_URL } from "../../utils/constants"
 
 const MyPage = () => {
   const location = useLocation()
@@ -14,6 +15,7 @@ const MyPage = () => {
   const [userSettings, setUserSettings] = useState({})
   const [isPopupOpen, setIsPopupOpen] = useState(false)
   const [profileImageUrl, setProfileImageUrl] = useState(null)
+  const [backgroundColor, setBackgroundColor] = useState("#ffffff")
   const token = localStorage.getItem("token")
   const userId = getUserIdFromToken(token)
 
@@ -40,6 +42,10 @@ const MyPage = () => {
         })
         const data = await response.json()
         setUserSettings(data || {})
+
+        if (data.backgroundColor) {
+          setBackgroundColor(data.backgroundColor)
+        }
       } catch (error) {
         console.error("Error fetching settings:", error)
       }
@@ -95,11 +101,20 @@ const MyPage = () => {
     }
   }
 
+  const handleSettingsUpdated = () => {
+    window.location.reload()
+  }
+
   return (
     <div className="my-page">
       <Sidebar />
       <main className="content-wrapper">
-        <div className="my-page-container">
+        <div
+          className="my-page-container"
+          style={{
+            backgroundColor,
+          }}
+        >
           {isMainPage && (
             <>
               <div className="header-container">
@@ -107,7 +122,7 @@ const MyPage = () => {
                   <div className="title-left">
                     {profileImageUrl && (
                       <img
-                        src={`${process.env.REACT_APP_API_HOST}${profileImageUrl}`}
+                        src={`${FS_URL}${profileImageUrl}`}
                         alt="Profile"
                         className="profile-image"
                       />
@@ -127,6 +142,7 @@ const MyPage = () => {
                       token={token}
                       isEditable={true}
                       onPopupToggle={(isOpen) => setIsPopupOpen(isOpen)}
+                      onSettingsUpdated={handleSettingsUpdated}
                     />
                   </div>
                 )}
@@ -139,10 +155,7 @@ const MyPage = () => {
                         <div className="desk-my-container">
                           <div
                             className="user-info-container"
-                            style={{
-                              backgroundColor:
-                                userSettings.backgroundColor || "#ffffff",
-                            }}
+                            style={{ backgroundColor: "white" }}
                           >
                             <div className="user-info">
                               <h3>About Me</h3>
@@ -186,10 +199,7 @@ const MyPage = () => {
                         <div key={post._id} className="post">
                           <p>{post.text}</p>
                           {post.imageUrl && (
-                            <img
-                              src={`${process.env.REACT_APP_API_HOST}${post.imageUrl}`}
-                              alt="Post"
-                            />
+                            <img src={`${FS_URL}${post.imageUrl}`} alt="Post" />
                           )}
                           <p className="post-time">
                             {getTimeSinceMessage(post.createdAt)}

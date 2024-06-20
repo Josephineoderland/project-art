@@ -26,6 +26,12 @@
 
 @media (min-width: 1025px) {
   .img-container {
-    height: 700px;
+    height: 600px;
+  }
+}
+
+@media (min-width: 1764px) {
+  .img-container {
+    height: 840px;
   }
 }

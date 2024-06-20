@@ -8,21 +8,7 @@ const WhoAndWhatG = () => {
   const [showContent, setShowContent] = useState(false)
 
   useEffect(() => {
-    jsonApiRequest("GET", "/api/characters")
-      .then((response) => response.json())
-      .then((data) => {
-        const randomCharacter = data[Math.floor(Math.random() * data.length)]
-        setCharacter(randomCharacter.name)
-      })
-      .catch((error) => console.error("Error fetching characters:", error))
-
-    jsonApiRequest("GET", "/api/activities")
-      .then((response) => response.json())
-      .then((data) => {
-        const randomActivity = data[Math.floor(Math.random() * data.length)]
-        setActivity(randomActivity.name)
-      })
-      .catch((error) => console.error("Error fetching activities:", error))
+    generateRandom()
   }, [])
 
   const generateRandom = () => {
@@ -39,7 +25,6 @@ const WhoAndWhatG = () => {
         setCharacter("")
       })
 
-   
     const activityPromise = jsonApiRequest("GET", "/api/activities")
       .then((response) => response.json())
       .then((data) => {
@@ -58,15 +43,15 @@ const WhoAndWhatG = () => {
 
   return (
     <div className="character-page">
-      <div className="generate-container">
+      <div className="generate-container place">
         <div className="Random">
           <div className="content-section">
             <h3>Random Character:</h3>
-            {showContent && <p>{character}</p>}{" "}
+            {showContent && <p>{character}</p>}
           </div>
           <div className="content-section">
             <h3>Random Activity:</h3>
-            {showContent && <p>{activity}</p>}{" "}
+            {showContent && <p>{activity}</p>}
           </div>
           <div className="character-btn">
             <button className="generate-btn" onClick={generateRandom}>

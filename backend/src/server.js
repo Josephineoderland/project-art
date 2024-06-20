@@ -28,6 +28,7 @@ const io = new Server(server, {
     origin: "*",
     methods: ["GET", "POST"],
   },
+  path: "/api/socket.io",
 })
 
 app.use(
@@ -45,7 +46,7 @@ app.use(
     },
     methods: "GET,POST,PUT,DELETE",
     allowedHeaders: "Content-Type,Authorization",
-  }),
+  })
 )
 
 app.use(express.json())
@@ -55,11 +56,12 @@ const router = express.Router()
 
 router.use(
   "/uploads",
-  express.static(path.join(__dirname, "../public/uploads")),
+  express.static(path.join(__dirname, "../public/uploads"))
 )
+console.log(path.join(__dirname, "../public/profile-uploads"))
 router.use(
   "/profile-uploads",
-  express.static(path.join(__dirname, "../public/profile-uploads")),
+  express.static(path.join(__dirname, "../public/profile-uploads"))
 )
 
 router.get("/", (req, res) => {
@@ -90,7 +92,7 @@ io.on("connection", (socket) => {
 
   socket.on("sendMessage", async ({ message, userId, receiverId }) => {
     console.log(
-      `sendMessage(message=${message}, userId=${userId}, receiverId=${receiverId})`,
+      `sendMessage(message=${message}, userId=${userId}, receiverId=${receiverId})`
     )
     const sender = await User.findById(userId)
     if (!sender) {

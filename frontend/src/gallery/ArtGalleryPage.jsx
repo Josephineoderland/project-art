@@ -1,38 +1,38 @@
 import React, { useState, useRef } from "react"
-import axios from "axios"
 import defaultImage from "../assets/artGallery.jpg"
 import "../css/artGallery.css"
+import { jsonApiRequest } from "../utils/api"
 
 const ArtGalleryPage = () => {
   const [searchQuery, setSearchQuery] = useState("")
-  const [artGalleries, setArtGalleries] = useState([])
+  const [artGalleries, setArtGalleries] = useState(null)
   const [loading, setLoading] = useState(false)
   const arrowRef = useRef(null)
 
   const handleSearch = async () => {
     setLoading(true)
     try {
-      navigator.geolocation.getCurrentPosition(async (position) => {
-        const response = await axios.get(
-          `https://my-art-server.onrender.com/maps/art-galleries?query=art+galleries&types=art_gallery&radius=50000&latitude=${position.coords.latitude}&longitude=${position.coords.longitude}`
-        )
+      const response = await jsonApiRequest(
+        "GET",
+        `/maps/art-galleries?query=${searchQuery}`
+      )
+      const data = await response.json()
 
-        const filteredResults = response.data.filter((gallery) => {
-          const nameMatches = gallery.name
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase())
-          const addressMatches = gallery.formatted_address
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase())
-          return nameMatches || addressMatches
-        })
-        const limitedResults = filteredResults.slice(0, 5)
-        setArtGalleries(limitedResults)
-        if (arrowRef.current && limitedResults.length > 0) {
-          arrowRef.current.style.display = "flex"
-        }
-        setLoading(false)
+      const filteredResults = data.filter((gallery) => {
+        const nameMatches = gallery.name
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())
+        const addressMatches = gallery.formatted_address
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())
+        return nameMatches || addressMatches
       })
+      const limitedResults = filteredResults.slice(0, 5)
+      setArtGalleries(limitedResults)
+      if (arrowRef.current && limitedResults.length > 0) {
+        arrowRef.current.style.display = "flex"
+      }
+      setLoading(false)
     } catch (error) {
       console.error("Error searching for art galleries:", error)
     }
@@ -94,20 +94,14 @@ const ArtGalleryPage = () => {
           </div>
         </form>
       </div>
-      {!searchQuery && (
-        <footer className="app-footer">
-          <div className="footer-content">
-            <p>&copy; Uses Google Maps.</p>
-          </div>
-        </footer>
-      )}
+
       {loading ? (
         <div className="loading-container">
           <h4 className="loading">Loading...</h4>
         </div>
       ) : (
         <div>
-          {artGalleries.length > 0 && (
+          {artGalleries && artGalleries.length > 0 && (
             <div className="arrow-more" onClick={handleScroll} ref={arrowRef}>
               <p>Places</p>
               <i
@@ -117,7 +111,7 @@ const ArtGalleryPage = () => {
             </div>
           )}
           <div className="gallery-container">
-            {artGalleries.length > 0
+            {artGalleries && artGalleries.length > 0
               ? artGalleries.map((gallery, index) => (
                   <div key={index} className="gallery-item-container">
                     <div key={index} className="gallery-item">
@@ -152,10 +146,14 @@ const ArtGalleryPage = () => {
           </div>
         </div>
       )}
-
-      {searchQuery !== "" && !loading && artGalleries.length === 0 && (
-        <p>No art galleries found in this location.</p>
-      )}
+      <div className="no-art">
+        {searchQuery !== "" &&
+          !loading &&
+          artGalleries &&
+          artGalleries.length === 0 && (
+            <p>No art galleries found in this location.</p>
+          )}
+      </div>
     </div>
   )
 }

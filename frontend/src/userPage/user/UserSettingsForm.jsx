@@ -6,6 +6,7 @@ const UserSettingsForm = ({
   token,
   isEditable = true,
   onPopupToggle,
+  onSettingsUpdated,
 }) => {
   const pastelColors = [
     "#ffb3ba",
@@ -72,6 +73,10 @@ const UserSettingsForm = ({
       const data = await response.json()
       setSettings(data)
       onPopupToggle(false)
+
+      if (typeof onSettingsUpdated === 'function') {
+        onSettingsUpdated();
+      }
     } catch (error) {
       console.error("Error updating settings:", error)
     }
@@ -144,7 +149,6 @@ const UserSettingsForm = ({
             placeholder="About Me"
           ></textarea>
         </div>
-
 
         <div className="form-group mobile">
           <label htmlFor="backgroundColor">Background Color:</label>

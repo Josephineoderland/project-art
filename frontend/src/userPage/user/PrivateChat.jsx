@@ -15,21 +15,31 @@ const PrivateChat = () => {
   useEffect(() => {
     const token = localStorage.getItem("token")
 
-    apiRequest("GET", `/private-chat/messages/${friendId}`, {
-      Authorization: `Bearer ${token}`,
-    }).then(async (v) => {
-      const data = await v.json()
-      if (data) {
-        data.forEach((msg) => {
-          addMessageToChat(msg)
-        })
+    const fetchMessages = async () => {
+      try {
+        const response = await apiRequest(
+          "GET",
+          `/private-chat/messages/${friendId}`,
+          {
+            Authorization: `Bearer ${token}`,
+          }
+        )
+        const data = await response.json()
+        if (data) {
+          setMessages(data)
+        }
+      } catch (error) {
+        console.error("Error fetching messages:", error)
       }
-    })
+    }
 
+    fetchMessages()
     const newSocket = io(process.env.REACT_APP_API_HOST, {
       transports: ["websocket"],
       auth: { token },
+      path: "/api/socket.io",
     })
+
     setSocket(newSocket)
 
     return () => {
@@ -37,32 +47,30 @@ const PrivateChat = () => {
     }
   }, [friendId])
 
-  const addMessageToChat = (message) => {
-    const currentUserId = getUserIdFromToken(localStorage.getItem("token"))
-
-    const isSenderLeft = message.userId !== currentUserId
-
-    const formattedMessage = {
-      ...message,
-      isSenderLeft,
-      timestamp: new Date(message.timestamp || Date.now()),
-    }
-    console.log(formattedMessage.timestamp)
-
-    setMessages((prevMessages) => [...prevMessages, formattedMessage])
-  }
-
   useEffect(() => {
     if (!socket) return
 
-    socket.on("message", (message) => {
-      addMessageToChat(message)
-    })
+    const handleIncomingMessage = (message) => {
+      setMessages((prevMessages) => [...prevMessages, message])
+    }
+
+    socket.on("message", handleIncomingMessage)
 
     return () => {
-      socket.off("message")
+      socket.off("message", handleIncomingMessage)
     }
   }, [socket])
+
+  useEffect(() => {
+    const handlePageReload = () => {
+      window.location.reload()
+    }
+
+    window.addEventListener("popstate", handlePageReload)
+    return () => {
+      window.removeEventListener("popstate", handlePageReload)
+    }
+  }, [])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -87,14 +95,19 @@ const PrivateChat = () => {
   }
 
   return (
-    <>
+    <div className="my-page-container" style={{ background: "White" }}>
       <div className="private-chat-container">
         <div className="private-msg">
           <ul>
             {messages.map((message, index) => (
               <li
                 key={index}
-                className={message.isSenderLeft ? "left" : "right"}
+                className={
+                  message.userId ===
+                  getUserIdFromToken(localStorage.getItem("token"))
+                    ? "right"
+                    : "left"
+                }
               >
                 <div className="message-priv">
                   <strong>{message.sender}: </strong> {message.text}
@@ -110,13 +123,14 @@ const PrivateChat = () => {
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Type a message..."
+            style={{ borderBottom: "none" }}
           />
-          <button className="fill-button privet" type="submit">
+          <button className="fill-button privet"  type="submit">
             Send
           </button>
         </form>
       </div>
-    </>
+    </div>
   )
 }
 

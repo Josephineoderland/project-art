@@ -1,6 +1,7 @@
 .user-page {
   max-width: 800px;
   margin: 0 auto;
+
   padding: 20px;
 }
 
@@ -27,5 +28,15 @@
 
   .FriendRequestbutton {
     margin-left: 30px;
+  }
+}
+
+@media (min-width: 1025px) {
+  .user-container {
+    padding: 20px;
+    margin-top: 20px;
+    background-image: url("../assets/fisk5.jpg");
+    width: 100%;
+    background-position: top;
   }
 }

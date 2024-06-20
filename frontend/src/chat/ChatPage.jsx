@@ -172,26 +172,28 @@ const ChatPage = () => {
       <h2 className="title">Chat</h2>
       <div className="list-desk">
         <div className="message-list">
-          {messages.map((message) => (
-            <div key={message._id} className="message">
-              <p className="user-name">{message.user}:</p>
-              <p className="message-text">{message.text}</p>
-              <div className="message-footer">
-                <button
-                  onClick={() =>
-                    toggleLike(
-                      message._id,
-                      likedMessages.includes(message._id) ? "unlike" : "like"
-                    )
-                  }
-                >
-                  {likedMessages.includes(message._id) ? "❤️️" : "♥"}{" "}
-                  {message.likes}
-                </button>
-                <p>{getTimeSinceMessage(message.createdAt)}</p>
+          {messages
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+            .map((message) => (
+              <div key={message._id} className="message">
+                <p className="user-name">{message.user}:</p>
+                <p className="message-text">{message.text}</p>
+                <div className="message-footer">
+                  <button
+                    onClick={() =>
+                      toggleLike(
+                        message._id,
+                        likedMessages.includes(message._id) ? "unlike" : "like"
+                      )
+                    }
+                  >
+                    {likedMessages.includes(message._id) ? "❤️️" : "♥"}{" "}
+                    {message.likes}
+                  </button>
+                  <p>{getTimeSinceMessage(message.createdAt)}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
     </div>

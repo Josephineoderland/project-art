@@ -42,13 +42,9 @@ const PrivChat = () => {
           return
         }
 
-        const response = await apiRequest(
-          "GET",
-          `/private-chat/unread-counts`,
-          {
-            Authorization: `Bearer ${token}`,
-          }
-        )
+        const response = await apiRequest("GET", `/private-chat/unread-count`, {
+          Authorization: `Bearer ${token}`,
+        })
 
         const data = await response.json()
         console.log("Unread messages data:", data)
@@ -109,7 +105,9 @@ const PrivChat = () => {
               <p className="friend-name">
                 {friend.username}
                 {unreadMessages[friend._id] > 0 && (
-                  <span className="unread-message-text">Unread messages</span>
+                  <span className="unread-badge" style={{ marginLeft: "5px" }}>
+                    {unreadMessages[friend._id]}
+                  </span>
                 )}
               </p>
               <button

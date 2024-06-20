@@ -1,19 +1,25 @@
-import React, { useState, useEffect, useCallback } from "react"
+import React, { useState, useEffect, useCallback, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import { getUserIdFromToken } from "../auth/authUtils"
 import "../../css/log-reg.css"
-import fillImg from "../../assets/Namnlöst-8.png"
+import fillImg from "../../assets/klarfisk.jpg"
 import { apiRequest } from "../../utils/api"
 
 const Register = ({ onRegister }) => {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
   const [profileImage, setProfileImage] = useState(null)
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [registered, setRegistered] = useState(false)
   const [isFormComplete, setIsFormComplete] = useState(false)
   const navigate = useNavigate()
+
+  const usernameInputRef = useRef(null)
+  const passwordInputRef = useRef(null)
+  const profileImageInputRef = useRef(null)
+  const registerButtonRef = useRef(null)
 
   const handleRegister = useCallback(async () => {
     setIsLoading(true)
@@ -75,70 +81,111 @@ const Register = ({ onRegister }) => {
     return shortenedName
   }
 
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword)
+  }
+
+  const focusNext = (currentRef, nextRef) => {
+    if (currentRef.current && nextRef.current) {
+      currentRef.current.blur()
+      nextRef.current.focus()
+    }
+  }
+
   return (
-    <div className="fill-container">
-      <div className="fill-in">
-        <div className="fill-title">
-          <h3>Register Now</h3>
-        </div>
-        <div className="log-reg-input">
-          <div className="input-container">
-            <i className="fas fa-user input-icon user-icon"></i>{" "}
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Username"
-              disabled={isLoading}
-            />
+    <div className="log-reg-container">
+      <div className="fill-container">
+        <div className="fill-in">
+          <div className="fill-title">
+            <h3>Register Now</h3>
+          </div>
+          <div className="log-reg-input">
+            <div className="input-container">
+              <i className="fas fa-user input-icon user-icon"></i>{" "}
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Username"
+                disabled={isLoading}
+                ref={usernameInputRef}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    focusNext(usernameInputRef, passwordInputRef)
+                  }
+                }}
+              />
+            </div>
+            <div className="input-container">
+              <i className="fas fa-lock input-icon password-icon"></i>{" "}
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                disabled={isLoading}
+                ref={passwordInputRef}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    focusNext(passwordInputRef, profileImageInputRef)
+                  }
+                }}
+              />
+              <button
+                type="button"
+                className="show-password-button"
+                onClick={toggleShowPassword}
+              >
+                <i
+                  className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"}
+                ></i>
+              </button>
+            </div>
           </div>
           <div className="input-container">
-            <i className="fas fa-lock input-icon password-icon"></i>{" "}
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              disabled={isLoading}
-            />
+            <i className="fas fa-file-alt input-icon file-icon"></i>
+            <div className="file-upload-container">
+              <label htmlFor="fileInput" className="file-upload-label">
+                select a profile picture:{" "}
+                <span className="file-name">
+                  {profileImage
+                    ? shortenFileName(profileImage.name)
+                    : "No picture chosen"}
+                </span>
+              </label>
+              <input
+                type="file"
+                id="fileInput"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="file-upload-input"
+                hidden
+                ref={profileImageInputRef}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    focusNext(profileImageInputRef, registerButtonRef)
+                  }
+                }}
+              />
+            </div>
           </div>
-        </div>
-        <div className="input-container">
-          <i className="fas fa-file-alt input-icon file-icon"></i>
-          <div className="file-upload-container">
-            <label htmlFor="fileInput" className="file-upload-label">
-              select a profile picture:{" "}
-              <span className="file-name">
-                {profileImage
-                  ? shortenFileName(profileImage.name)
-                  : "No picture chosen"}
-              </span>
-            </label>
-            <input
-              type="file"
-              id="fileInput"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="file-upload-input"
-              hidden
-            />
+          <div className="fill-img">
+            <img src={fillImg} alt="User Icon" className="input-img" />
           </div>
+          <button
+            className="fill-button"
+            onClick={handleRegister}
+            disabled={isLoading || !isFormComplete}
+            ref={registerButtonRef}
+          >
+            {isLoading
+              ? "Loading..."
+              : registered
+              ? "You are now registered & logged in!"
+              : "Register"}
+          </button>
+          {error && <p>{error}</p>}
         </div>
-        <div className="fill-img">
-          <img src={fillImg} alt="User Icon" className="input-img" />
-        </div>
-        <button
-          className="fill-button"
-          onClick={handleRegister}
-          disabled={isLoading || !isFormComplete}
-        >
-          {isLoading
-            ? "Loading..."
-            : registered
-            ? "You are now registered and logged in!"
-            : "Register"}
-        </button>
-        {error && <p>{error}</p>}
       </div>
     </div>
   )

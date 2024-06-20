@@ -36,8 +36,8 @@ const PlaceAndFeelG = () => {
 
   return (
     <div className="character-page">
-      <div className="generate-container">
-        <div className="Random">
+      <div className="generate-container place">
+        <div className="Random desk">
           <div className="content-section">
             <h3>Random Feeling:</h3>
             {showContent && <p>{feeling}</p>}

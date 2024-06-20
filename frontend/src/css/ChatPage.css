@@ -63,6 +63,7 @@ form:hover {
 }
 
 .file-upload-container {
+  padding: 15px 0;
   margin-bottom: 10px;
 }
 
@@ -120,7 +121,14 @@ form:hover {
   }
 
   .chat-container {
-    background-image: url("../assets/chat3.png");
+    background-image: url("../assets/fisk5.jpg");
+    width: 100%;
+    background-position: top;
+    margin-top: 20px;
+  }
+
+  .title {
+    color: #ffffff;
   }
 }
 
@@ -143,7 +151,17 @@ form:hover {
   }
 
   .chat-container {
-    background-image: url("../assets/chat3.png");
+    background-image: url("../assets/fisk5.jpg");
+    width: 100%;
     background-position: top;
+    margin-top: 20px;
+  }
+
+  .file-upload-container {
+    padding: 25px 0;
+  }
+
+  .title {
+    color: #ffffff;
   }
 }
